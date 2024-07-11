@@ -7,6 +7,7 @@ import { mintToken } from '../tokenCreation/splMint';
 import { transferToken } from '../tokenCreation/splTransfer';
 import UserSearch, { UserType } from '../UserSearch';
 import CryptoJS from 'crypto-js';
+import { SelectChangeEvent } from '@mui/material/Select';
 
 interface PurchaseItem {
   itemName: string;
@@ -274,6 +275,13 @@ const AssignPoints: React.FC = () => {
     console.log('Added new purchase item. Current items:', purchaseItems);
   };
 
+  const handleSelectUser = (event: SelectChangeEvent<string>) => {
+    const selectedUser = followers.find(follower => follower.id === event.target.value);
+    if (selectedUser) {
+      setCustomer(selectedUser);
+    }
+  };
+
   return (
     <Box>
       <Typography variant="h6" gutterBottom>
@@ -346,6 +354,22 @@ const AssignPoints: React.FC = () => {
       >
         {loading ? <CircularProgress size={24} /> : 'Airdrop Points'}
       </Button>
+      {followers.length > 0 && (
+        <FormControl fullWidth sx={{ marginTop: 4 }}>
+          <InputLabel>Select Follower</InputLabel>
+          <Select
+            value={selectedUser}
+            onChange={handleSelectUser}
+            displayEmpty
+          >
+            {followers.map(follower => (
+              <MenuItem key={follower.id} value={follower.id}>
+                {follower.email} - {follower.publicKey}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      )}
     </Box>
   );
 };
